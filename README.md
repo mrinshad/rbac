@@ -1,53 +1,78 @@
-# Next.js & NextUI Template
+# Role-Based Access Control (RBAC) UI
 
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
+## Project Overview
 
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
+This is a Role-Based Access Control (RBAC) System that allows administrators to view and manage user roles and permissions.
 
-## Technologies Used
+## Prerequisites
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+Before you begin, ensure you have the following installed:
+- Node.js (v18 or later)
+- npm (v9 or later)
 
-## How to Use
+## Technology Stack
 
-### Use the template with create-next-app
+- React
+- Next.js
+- NextUI
+- JSON Server (for mock API)
 
-To create a new project based on this template using `create-next-app`, run the following command:
+## Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
+git clone https://github.com/mrinshad/rbac.git
+cd rbac
 ```
 
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### Run the development server
+### 3. Setup JSON Server
 
+Install JSON Server globally:
+```bash
+npm install -g json-server
+```
+
+### 4. Run the Project
+
+Open two terminal windows:
+
+Terminal 1 - Start JSON Server:
+```bash
+json-server --watch db.json --port 3001
+```
+
+Terminal 2 - Start Next.js Development Server:
 ```bash
 npm run dev
 ```
 
-### Setup pnpm (optional)
+### 5. Access the Application
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- JSON Server API: [http://localhost:3001](http://localhost:3001)
 
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
+## Configuration
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+### JSON Server Endpoints
 
-## License
+- `/roles`: Retrieve and manage roles
+- `/permissions`: Retrieve and manage role permissions
+- `/users`: Retrieve and manage user information
 
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+## Features
+
+- View roles and their permissions
+- Real-time permission updates
+- Responsive design
+- Mock API integration
+
+## Contact
+
+Mohammed Rinshad P - rinshadmorayur09@gmail.com

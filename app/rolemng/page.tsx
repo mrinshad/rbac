@@ -133,6 +133,20 @@ const RoleTable = () => {
 
   return (
     <div className="p-6">
+      <div className="grid grid-cols-12 gap-4 mb-5">
+        <div className="col-span-10">
+          <h1 className="font-bold text-3xl">Role management</h1>
+          <p className="text-zinc-400">Manage roles with specific permissions to ensure proper access control.</p>
+        </div>
+
+        <div className="col-span-2 flex items-center justify-end">
+          <button
+            className="bg-zinc-900 text-white py-2 px-3 rounded-md hover:bg-gray-700"
+          >
+            + Add new role
+          </button>
+        </div>
+      </div>
       <Table
         aria-label="Role Management Table"
         css={{

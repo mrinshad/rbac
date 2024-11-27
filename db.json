@@ -34,9 +34,9 @@
       "role_id": "002",
       "role_name": "Editor",
       "permissions": [
-        "Read",
         "Write",
-        "Edit"
+        "Edit",
+        "Read"
       ]
     },
     {
