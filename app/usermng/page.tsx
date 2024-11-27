@@ -54,6 +54,7 @@ export default function UserManagement() {
   const [status, setStatus] = useState(true);
 
   const [permissions, setPermissions] = useState([]);
+  const [actionType, setActionType] = useState(0); // 0:add , 1:edit
 
   const {
     isOpen: isEditOpen,
@@ -85,7 +86,9 @@ export default function UserManagement() {
   }, [page, users]);
 
   const handleEditClick = (user: any) => {
+    setActionType(1);
     setSelectedUser(user);
+    onAddOpen();
     onEditOpen();
   };
 
@@ -95,6 +98,7 @@ export default function UserManagement() {
   };
 
   const handleAddUserClick = () => {
+    setActionType(0);
     onAddOpen();
   };
 
@@ -190,7 +194,38 @@ export default function UserManagement() {
     }
   };
 
-  const handleRoleSelection = (selectedRole:any) => {
+  // update user
+  const handleEditUser = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/users/${selectedUser?.id}`,
+        {
+          method: "PUT", // Use PUT or PATCH depending on your API implementation
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: username,
+            email,
+            role,
+            status: status ? "Active" : "Inactive",
+            permissions: currPermission,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to edit user");
+      }
+
+      fetchUsers();
+      onAddClose(); // Reuse onAddClose to close the modal
+    } catch (error) {
+      console.error("Error editing user:", error);
+    }
+  };
+
+  const handleRoleSelection = (selectedRole: any) => {
     const roleData = permissions.find(
       (permissionItem) => permissionItem.role_name === selectedRole
     );
@@ -217,7 +252,14 @@ export default function UserManagement() {
     fetchUsers();
     fetchRoles();
     fetchPermissions();
-  }, []);
+    if (actionType === 1 && selectedUser) {
+      setUsername(selectedUser.name || "");
+      setEmail(selectedUser.email || "");
+      setRole(selectedUser.role || "");
+      setStatus(selectedUser.status === "Active");
+      setPermissions(selectedUser.permissions || []);
+    }
+  }, [actionType, selectedUser]);
 
   return (
     <section>
@@ -330,8 +372,8 @@ export default function UserManagement() {
         </TableBody>
       </Table>
 
-      {/* Edit User Modal */}
-      <Modal isOpen={isEditOpen} onOpenChange={onEditClose}>
+      {/* View User Modal */}
+      {/* <Modal isOpen={isEditOpen} onOpenChange={onEditClose}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -341,6 +383,7 @@ export default function UserManagement() {
               <ModalBody>
                 <p>Role: {selectedUser?.role}</p>
                 <p>Status: {selectedUser?.status}</p>
+                <p>Email: {selectedUser?.email}</p>
                 <p>Permissions: {selectedUser?.permissions?.join(", ")}</p>
               </ModalBody>
               <ModalFooter>
@@ -354,7 +397,7 @@ export default function UserManagement() {
             </>
           )}
         </ModalContent>
-      </Modal>
+      </Modal> */}
 
       {/* Add User Modal */}
       <Modal
@@ -368,7 +411,7 @@ export default function UserManagement() {
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            Add New User
+            {actionType === 1 ? "Edit User" : "Add New User"}
           </ModalHeader>
 
           <ModalBody>
@@ -413,12 +456,11 @@ export default function UserManagement() {
                     </DropdownItem>
                   ))
                 ) : (
-                  <>
-                    <DropdownItem key="None">No roles availabel</DropdownItem>
-                  </>
+                  <DropdownItem key="None">No roles available</DropdownItem>
                 )}
               </DropdownMenu>
             </Dropdown>
+
             <div className="flex items-center mt-4">
               <p className="mr-4">Status</p>
               <Switch
@@ -436,8 +478,11 @@ export default function UserManagement() {
             <Button color="danger" variant="light" onPress={onAddClose}>
               Cancel
             </Button>
-            <Button color="primary" onPress={handleAddUser}>
-              Save User
+            <Button
+              color="primary"
+              onPress={actionType === 1 ? handleEditUser : handleAddUser}
+            >
+              {actionType === 1 ? "Update User" : "Save User"}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -59,16 +59,17 @@
   ],
   "users": [
     {
-      "id": "002",
-      "name": "Zoey Lang",
-      "role": "Editor",
-      "status": "Inactive",
+      "name": "Zoey Lang 23",
       "email": "zoey.lang@example.com",
+      "role": "Admin",
+      "status": "Inactive",
       "permissions": [
         "Read",
         "Write",
-        "Edit"
-      ]
+        "Edit",
+        "Delete"
+      ],
+      "id": "002"
     },
     {
       "id": "003",
@@ -403,18 +404,21 @@
       ]
     },
     {
-      "id": "033",
       "name": "Roy Anderson",
-      "role": "Viewer",
-      "status": "Inactive",
       "email": "roy.anderson@example.com",
+      "role": "Admin",
+      "status": "Inactive",
       "permissions": [
-        "Read"
-      ]
+        "Read",
+        "Write",
+        "Edit",
+        "Delete"
+      ],
+      "id": "033"
     },
     {
-      "name": "Rinshad",
-      "email": "hf nfv f",
+      "name": "Mohammed Rinshad P",
+      "email": "rinshadmorayur09@gmail.com",
       "role": "Admin",
       "status": "Active",
       "permissions": [
