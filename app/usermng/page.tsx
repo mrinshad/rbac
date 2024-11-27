@@ -50,19 +50,23 @@ export default function UserManagement() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [currPermission, setCurrPermission] = useState([]);
   const [status, setStatus] = useState(true);
 
-  // Use two separate `useDisclosure` hooks for the modals
+  const [permissions, setPermissions] = useState([]);
+
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
     onClose: onEditClose,
   } = useDisclosure();
+
   const {
     isOpen: isAddOpen,
     onOpen: onAddOpen,
     onClose: onAddClose,
   } = useDisclosure();
+
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -71,6 +75,30 @@ export default function UserManagement() {
 
   const rowsPerPage = 10;
 
+  const pages = Math.ceil(users.length / rowsPerPage);
+
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return users.slice(start, end);
+  }, [page, users]);
+
+  const handleEditClick = (user: any) => {
+    setSelectedUser(user);
+    onEditOpen();
+  };
+
+  const handleDeleteClick = (user: any) => {
+    setSelectedUser(user);
+    onDeleteOpen();
+  };
+
+  const handleAddUserClick = () => {
+    onAddOpen();
+  };
+
+  // Fetch user details
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
@@ -87,6 +115,7 @@ export default function UserManagement() {
     }
   };
 
+  // Fetch Roles
   const fetchRoles = async () => {
     try {
       const response = await fetch("http://localhost:3001/roles");
@@ -99,40 +128,28 @@ export default function UserManagement() {
       console.error("Error fetching roles", error);
     }
   };
-  useEffect(() => {
-    fetchUsers();
-    fetchRoles();
-  }, []);
 
-  const pages = Math.ceil(users.length / rowsPerPage);
-
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return users.slice(start, end);
-  }, [page, users]);
-
-  const handleEditClick = (user: any) => {
-    setSelectedUser(user);
-    onEditOpen();
-  };
-  
-  const handleDeleteClick = (user: any) => {
-    setSelectedUser(user);
-    onDeleteOpen();
+  // Fetch all permissions
+  const fetchPermissions = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/permissions");
+      if (!response.ok) {
+        throw new Error("Failed to fetch roles");
+      }
+      const data = await response.json();
+      setPermissions(data);
+    } catch (error) {
+      console.error("Error fetching roles", error);
+    }
   };
 
-  const handleAddUserClick = () => {
-    onAddOpen();
-  };
-
-  const handleDeleteUser = async (userId:any) => {
+  // Delete user
+  const handleDeleteUser = async (userId: any) => {
     try {
       const response = await fetch(`http://localhost:3001/users/${userId}`, {
         method: "DELETE",
       });
-  
+
       if (response.ok) {
         console.log("User deleted successfully");
       } else {
@@ -143,9 +160,9 @@ export default function UserManagement() {
     }
     fetchUsers();
     onDeleteClose();
+  };
 
-  };  
-
+  // Add user
   const handleAddUser = async () => {
     try {
       const response = await fetch("http://localhost:3001/users", {
@@ -158,6 +175,7 @@ export default function UserManagement() {
           email,
           role,
           status: status ? "Active" : "Inactive",
+          permissions: currPermission,
         }),
       });
 
@@ -165,11 +183,21 @@ export default function UserManagement() {
         throw new Error("Failed to add user");
       }
 
-      const newUser = await response.json();
-      setUsers((prevUsers) => [...prevUsers, newUser]);
+      fetchUsers();
       onAddClose();
     } catch (error) {
       console.error("Error adding user:", error);
+    }
+  };
+
+  const handleRoleSelection = (selectedRole:any) => {
+    const roleData = permissions.find(
+      (permissionItem) => permissionItem.role_name === selectedRole
+    );
+    if (roleData) {
+      setCurrPermission(roleData.permissions);
+    } else {
+      setCurrPermission([]);
     }
   };
 
@@ -184,6 +212,12 @@ export default function UserManagement() {
       D-DELETE
     </>
   );
+
+  useEffect(() => {
+    fetchUsers();
+    fetchRoles();
+    fetchPermissions();
+  }, []);
 
   return (
     <section>
@@ -273,7 +307,11 @@ export default function UserManagement() {
                           className="invert"
                         />
                       </Button>
-                      <Button onPress={() => handleDeleteClick(item)} color="danger" className="ml-2">
+                      <Button
+                        onPress={() => handleDeleteClick(item)}
+                        color="danger"
+                        className="ml-2"
+                      >
                         <Image
                           src="/delete.png"
                           height={15}
@@ -362,9 +400,11 @@ export default function UserManagement() {
                 aria-label="Select Role"
                 variant="flat"
                 selectionMode="single"
-                onSelectionChange={(keys) =>
-                  setRole(Array.from(keys)[0] as string)
-                }
+                onSelectionChange={(keys) => {
+                  const selectedRole = Array.from(keys)[0] as string;
+                  setRole(selectedRole);
+                  handleRoleSelection(selectedRole);
+                }}
               >
                 {roles.length > 0 ? (
                   roles.map((roleItem) => (
@@ -379,7 +419,6 @@ export default function UserManagement() {
                 )}
               </DropdownMenu>
             </Dropdown>
-
             <div className="flex items-center mt-4">
               <p className="mr-4">Status</p>
               <Switch
@@ -415,19 +454,20 @@ export default function UserManagement() {
         }}
       >
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">
-            Delete User
-          </ModalHeader>
+          <ModalHeader className="flex flex-col gap-1">Delete User</ModalHeader>
 
           <ModalBody>
-            <p>Do you want to delete user : {" " +selectedUser?.name}</p>
+            <p>Do you want to delete user : {" " + selectedUser?.name}</p>
           </ModalBody>
 
           <ModalFooter>
             <Button color="primary" variant="light" onPress={onDeleteClose}>
               Cancel
             </Button>
-            <Button color="danger"   onPress={() => handleDeleteUser(selectedUser?.id)}>
+            <Button
+              color="danger"
+              onPress={() => handleDeleteUser(selectedUser?.id)}
+            >
               Delete
             </Button>
           </ModalFooter>

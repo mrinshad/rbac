@@ -17,13 +17,11 @@
       "name": "Contributor"
     }
   ],
-  "users": [
+  "permissions": [
     {
       "id": "001",
-      "name": "Tony Reichert",
-      "role": "Admin",
-      "status": "Active",
-      "email": "tony.reichert@example.com",
+      "role_id": "001",
+      "role_name": "Admin",
       "permissions": [
         "Read",
         "Write",
@@ -31,6 +29,35 @@
         "Delete"
       ]
     },
+    {
+      "id": "002",
+      "role_id": "002",
+      "role_name": "Editor",
+      "permissions": [
+        "Read",
+        "Write",
+        "Edit"
+      ]
+    },
+    {
+      "id": "003",
+      "role_id": "003",
+      "role_name": "Viewer",
+      "permissions": [
+        "Read"
+      ]
+    },
+    {
+      "id": "004",
+      "role_id": "004",
+      "role_name": "Contributor",
+      "permissions": [
+        "Read",
+        "Write"
+      ]
+    }
+  ],
+  "users": [
     {
       "id": "002",
       "name": "Zoey Lang",
@@ -387,10 +414,16 @@
     },
     {
       "name": "Rinshad",
-      "email": "rinshadmorayur09@gmail.com",
-      "role": "Viewer",
+      "email": "hf nfv f",
+      "role": "Admin",
       "status": "Active",
-      "id": "3QaOGQ-"
+      "permissions": [
+        "Read",
+        "Write",
+        "Edit",
+        "Delete"
+      ],
+      "id": "akp99hs"
     }
   ]
 }
