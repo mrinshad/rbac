@@ -17,6 +17,7 @@ import {
   ModalFooter,
   Input,
 } from "@nextui-org/react";
+import Image from "next/image";
 
 const RoleTable = () => {
   const [roles, setRoles] = useState([]);
@@ -45,7 +46,7 @@ const RoleTable = () => {
       setPermissions(permissionsData);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError(error);
+      // setError(error);
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +91,7 @@ const RoleTable = () => {
             id: `${permissions.length + 1}`.padStart(3, "0"),
             role_id: newRole.id,
             role_name: newRoleName,
-            permissions: ["Read"], 
+            permissions: ["Read"],
           }),
         }
       );
@@ -233,6 +234,7 @@ const RoleTable = () => {
           <TableColumn>WRITE</TableColumn>
           <TableColumn>EDIT</TableColumn>
           <TableColumn>DELETE</TableColumn>
+          {/* <TableColumn></TableColumn> */}
         </TableHeader>
         <TableBody>
           {roles.map((role) => {
@@ -276,6 +278,21 @@ const RoleTable = () => {
                     }
                   />
                 </TableCell>
+                {/* <TableCell>
+                  <Button
+                    onPress={() => handleDeleteClick(role.id)}
+                    color="danger"
+                    className="ml-2"
+                  >
+                    <Image
+                      src="/delete.png"
+                      height={15}
+                      width={15}
+                      alt="edit icon"
+                      className="invert"
+                    />
+                  </Button>
+                </TableCell> */}
               </TableRow>
             );
           })}
