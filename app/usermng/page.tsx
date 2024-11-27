@@ -266,7 +266,9 @@ export default function UserManagement() {
       <div className="grid grid-cols-12 gap-4 mb-5">
         <div className="col-span-10">
           <h1 className="font-bold text-3xl">User management</h1>
-          <p className="text-zinc-400">Manage users and their  roles effectively in this section.</p>
+          <p className="text-zinc-400">
+            Manage users and their roles effectively in this section.
+          </p>
         </div>
 
         <div className="col-span-2 flex items-center justify-end">
@@ -280,6 +282,7 @@ export default function UserManagement() {
       </div>
 
       <Table
+        className="lg:w-full"
         bottomContent={
           !isLoading && pages > 0 ? (
             <div className="flex w-full justify-center">

@@ -114,7 +114,7 @@ const RoleTable = () => {
     fetchRolesAndPermissions();
   }, []);
 
-  const handlePermissionToggle = async (roleId, permissionType) => {
+  const handlePermissionToggle = async (roleId: any, permissionType: string) => {
     try {
       const currentPermissionEntry = permissions.find(
         (p) => p.role_id === roleId
@@ -165,7 +165,7 @@ const RoleTable = () => {
     }
   };
 
-  const getPermissionsForRole = (roleId) => {
+  const getPermissionsForRole = (roleId: any) => {
     const rolePermission = permissions.find((p) => p.role_id === roleId);
     return {
       read: rolePermission?.permissions.includes("Read") || false,

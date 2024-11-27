@@ -6,9 +6,9 @@ import clsx from "clsx";
 import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
 import { Sidebar } from "@/components/sidebar";
 import { fontMontserrat } from "@/config/fonts";
+import { Navbar, NavbarMenu, NavbarMenuItem } from "@nextui-org/react";
 
 export const metadata: Metadata = {
   title: {
@@ -28,6 +28,7 @@ export const viewport: Viewport = {
   ],
 };
 
+
 export default function RootLayout({
   children,
 }: {
@@ -45,10 +46,10 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex h-screen">
             {/* Sidebar */}
-            <Sidebar/>
+            <Sidebar />
 
             {/* Main Content */}
-            <main className="flex-1 container w-full px-6 py-4">
+            <main className={`flex-1 ${"lg:w-full w-full"} px-6 py-4`}>
               {children}
             </main>
           </div>
