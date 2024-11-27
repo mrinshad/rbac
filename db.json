@@ -15,6 +15,18 @@
     {
       "id": "004",
       "name": "Contributor"
+    },
+    {
+      "name": "Mismcd",
+      "id": "005"
+    },
+    {
+      "name": "mmmmd",
+      "id": "006"
+    },
+    {
+      "name": "sdssd",
+      "id": "007"
     }
   ],
   "permissions": [
@@ -55,22 +67,36 @@
         "Read",
         "Write"
       ]
-    }
-  ],
-  "users": [
+    },
     {
-      "name": "Zoey Lang 23",
-      "email": "zoey.lang@example.com",
-      "role": "Admin",
-      "status": "Inactive",
+      "id": "005",
+      "role_id": "005",
+      "role_name": "Mismcd",
+      "permissions": [
+        "Read"
+      ]
+    },
+    {
+      "id": "006",
+      "role_id": "006",
+      "role_name": "mmmmd",
       "permissions": [
         "Read",
         "Write",
-        "Edit",
-        "Delete"
-      ],
-      "id": "002"
+        "Edit"
+      ]
     },
+    {
+      "id": "007",
+      "role_id": "007",
+      "role_name": "sdssd",
+      "permissions": [
+        "Read",
+        "Delete"
+      ]
+    }
+  ],
+  "users": [
     {
       "id": "003",
       "name": "Jane Fisher",
