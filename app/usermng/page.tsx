@@ -262,11 +262,11 @@ export default function UserManagement() {
   }, [actionType, selectedUser]);
 
   return (
-    <section>
+    <section className="p-6">
       <div className="grid grid-cols-12 gap-4 mb-5">
         <div className="col-span-10">
           <h1 className="font-bold text-3xl">User management</h1>
-          <p className="text-zinc-400">Manage users and their role here.</p>
+          <p className="text-zinc-400">Manage users and their  roles effectively in this section.</p>
         </div>
 
         <div className="col-span-2 flex items-center justify-end">

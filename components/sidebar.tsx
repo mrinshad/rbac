@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const Sidebar = () => {
   return (
-    <section className={`w-2/12 bg-zinc-900 h-screen`}>
+    <section className={`w-2/12 bg-zinc-900 h-screen md:block hidden`}>
       <div className=" p-5 w-full  flex   flex-col">
         <div className=" w-full flex justify-start items-center flex-row">
           <Image
@@ -44,8 +44,8 @@ export const Sidebar = () => {
               />
               Role Management
             </Link>
-          </li>
-          <li className="flex items-center">
+            </li>
+          {/* <li className="flex items-center">
             <Link className="flex items-center" href="/permission">
               <Image
                 alt="permission icon"
@@ -56,7 +56,7 @@ export const Sidebar = () => {
               />
               Permissions
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
     </section>
