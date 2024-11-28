@@ -28,6 +28,25 @@ import {
   Input,
 } from "@nextui-org/react";
 
+// Define interfaces for the data types
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  permissions: string[];
+}
+
+interface Role {
+  name: string;
+}
+
+interface Permission {
+  role_name: string;
+  permissions: string[];
+}
+
 const formatPermissions = (permissions: string[]) => {
   const permissionMap: { [key: string]: string } = {
     Read: "R",
@@ -40,21 +59,21 @@ const formatPermissions = (permissions: string[]) => {
 };
 
 export default function UserManagement() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(1);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // add user modal
-  const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
-  const [currPermission, setCurrPermission] = useState([]);
+  const [currPermission, setCurrPermission] = useState<string[]>([]);
   const [status, setStatus] = useState(true);
 
-  const [permissions, setPermissions] = useState([]);
-  const [actionType, setActionType] = useState(0); // 0:add , 1:edit
+  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [actionType, setActionType] = useState<0 | 1>(0); // 0:add , 1:edit
 
   const {
     isOpen: isEditOpen,
@@ -85,20 +104,21 @@ export default function UserManagement() {
     return users.slice(start, end);
   }, [page, users]);
 
-  const handleEditClick = (user: any) => {
+  const handleEditClick = (user: User) => {
     setActionType(1);
     setSelectedUser(user);
     onAddOpen();
     onEditOpen();
   };
 
-  const handleDeleteClick = (user: any) => {
+  const handleDeleteClick = (user: User) => {
     setSelectedUser(user);
     onDeleteOpen();
   };
 
   const handleAddUserClick = () => {
     setActionType(0);
+    setSelectedUser(null);
     onAddOpen();
   };
 
@@ -110,7 +130,7 @@ export default function UserManagement() {
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }
-      const data = await response.json();
+      const data: User[] = await response.json();
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -126,7 +146,7 @@ export default function UserManagement() {
       if (!response.ok) {
         throw new Error("Failed to fetch roles");
       }
-      const data = await response.json();
+      const data: Role[] = await response.json();
       setRoles(data);
     } catch (error) {
       console.error("Error fetching roles", error);
@@ -138,17 +158,17 @@ export default function UserManagement() {
     try {
       const response = await fetch("http://localhost:3001/permissions");
       if (!response.ok) {
-        throw new Error("Failed to fetch roles");
+        throw new Error("Failed to fetch permissions");
       }
-      const data = await response.json();
+      const data: Permission[] = await response.json();
       setPermissions(data);
     } catch (error) {
-      console.error("Error fetching roles", error);
+      console.error("Error fetching permissions", error);
     }
   };
 
   // Delete user
-  const handleDeleteUser = async (userId: any) => {
+  const handleDeleteUser = async (userId: number) => {
     try {
       const response = await fetch(`http://localhost:3001/users/${userId}`, {
         method: "DELETE",
@@ -197,10 +217,12 @@ export default function UserManagement() {
   // update user
   const handleEditUser = async () => {
     try {
+      if (!selectedUser) return;
+
       const response = await fetch(
-        `http://localhost:3001/users/${selectedUser?.id}`,
+        `http://localhost:3001/users/${selectedUser.id}`,
         {
-          method: "PUT", // Use PUT or PATCH depending on your API implementation
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -219,13 +241,13 @@ export default function UserManagement() {
       }
 
       fetchUsers();
-      onAddClose(); // Reuse onAddClose to close the modal
+      onAddClose();
     } catch (error) {
       console.error("Error editing user:", error);
     }
   };
 
-  const handleRoleSelection = (selectedRole: any) => {
+  const handleRoleSelection = (selectedRole: string) => {
     const roleData = permissions.find(
       (permissionItem) => permissionItem.role_name === selectedRole
     );
@@ -252,14 +274,25 @@ export default function UserManagement() {
     fetchUsers();
     fetchRoles();
     fetchPermissions();
+  }, []);
+
+  useEffect(() => {
     if (actionType === 1 && selectedUser) {
+      // Edit mode - populate fields with selected user's data
       setUsername(selectedUser.name || "");
       setEmail(selectedUser.email || "");
       setRole(selectedUser.role || "");
       setStatus(selectedUser.status === "Active");
-      setPermissions(selectedUser.permissions || []);
+      setCurrPermission(selectedUser.permissions || []);
+    } else {
+      // Add mode - reset all fields
+      setUsername("");
+      setEmail("");
+      setRole("");
+      setStatus(true);
+      setCurrPermission([]);
     }
-  }, [actionType, selectedUser]);
+  }, [actionType, selectedUser, isAddOpen]);
 
   return (
     <section className="p-6">
@@ -375,33 +408,6 @@ export default function UserManagement() {
         </TableBody>
       </Table>
 
-      {/* View User Modal */}
-      {/* <Modal isOpen={isEditOpen} onOpenChange={onEditClose}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Edit User: {selectedUser?.name}
-              </ModalHeader>
-              <ModalBody>
-                <p>Role: {selectedUser?.role}</p>
-                <p>Status: {selectedUser?.status}</p>
-                <p>Email: {selectedUser?.email}</p>
-                <p>Permissions: {selectedUser?.permissions?.join(", ")}</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Save Changes
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal> */}
-
       {/* Add User Modal */}
       <Modal
         backdrop="opaque"
@@ -514,7 +520,7 @@ export default function UserManagement() {
             </Button>
             <Button
               color="danger"
-              onPress={() => handleDeleteUser(selectedUser?.id)}
+              onPress={() => selectedUser?.id !== undefined && handleDeleteUser(selectedUser.id)}
             >
               Delete
             </Button>

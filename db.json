@@ -15,18 +15,6 @@
     {
       "id": "004",
       "name": "Contributor"
-    },
-    {
-      "name": "Mismcd",
-      "id": "005"
-    },
-    {
-      "name": "mmmmd",
-      "id": "006"
-    },
-    {
-      "name": "sdssd",
-      "id": "007"
     }
   ],
   "permissions": [
@@ -67,45 +55,21 @@
         "Read",
         "Write"
       ]
-    },
-    {
-      "id": "005",
-      "role_id": "005",
-      "role_name": "Mismcd",
-      "permissions": [
-        "Read"
-      ]
-    },
-    {
-      "id": "006",
-      "role_id": "006",
-      "role_name": "mmmmd",
-      "permissions": [
-        "Read",
-        "Write",
-        "Edit"
-      ]
-    },
-    {
-      "id": "007",
-      "role_id": "007",
-      "role_name": "sdssd",
-      "permissions": [
-        "Read",
-        "Delete"
-      ]
     }
   ],
   "users": [
     {
-      "id": "003",
       "name": "Jane Fisher",
-      "role": "Viewer",
-      "status": "Active",
       "email": "jane.fisher@example.com",
+      "role": "Admin",
+      "status": "Active",
       "permissions": [
-        "Read"
-      ]
+        "Read",
+        "Write",
+        "Edit",
+        "Delete"
+      ],
+      "id": "003"
     },
     {
       "id": "004",
@@ -132,17 +96,14 @@
       ]
     },
     {
-      "id": "006",
       "name": "Michael Scott",
-      "role": "Admin",
-      "status": "Inactive",
       "email": "michael.scott@example.com",
+      "role": "Viewer",
+      "status": "Active",
       "permissions": [
-        "Read",
-        "Write",
-        "Edit",
-        "Delete"
-      ]
+        "Read"
+      ],
+      "id": "006"
     },
     {
       "id": "007",
@@ -454,6 +415,17 @@
         "Delete"
       ],
       "id": "akp99hs"
+    },
+    {
+      "name": "Rinhhhh",
+      "email": "kkk",
+      "role": "Contributor",
+      "status": "Inactive",
+      "permissions": [
+        "Read",
+        "Write"
+      ],
+      "id": "ckhnr6J"
     }
   ]
 }

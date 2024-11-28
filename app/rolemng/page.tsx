@@ -16,8 +16,18 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  useDisclosure,
 } from "@nextui-org/react";
 import Image from "next/image";
+
+interface Role {
+  id: number;
+  role_id: number;
+  role_name: string;
+  permissions: string[];
+}
+
+
 
 const RoleTable = () => {
   const [roles, setRoles] = useState([]);
@@ -26,6 +36,8 @@ const RoleTable = () => {
   const [error, setError] = useState(null);
   const [isAddRoleModalOpen, setIsAddRoleModalOpen] = useState(false);
   const [newRoleName, setNewRoleName] = useState("");
+
+  const [selectedRoleId, setSelectedRoleId] = useState<Role | null>(null);
 
   const fetchRolesAndPermissions = async () => {
     setIsLoading(true);
@@ -46,7 +58,6 @@ const RoleTable = () => {
       setPermissions(permissionsData);
     } catch (error) {
       console.error("Error fetching data:", error);
-      // setError(error);
     } finally {
       setIsLoading(false);
     }
@@ -110,11 +121,76 @@ const RoleTable = () => {
     }
   };
 
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
+
+  const handleDeleteClick = (roleId: Role) => {
+    // handleDelete(roleId);
+    setSelectedRoleId(roleId);
+    onDeleteOpen();
+  };
+
+  const printLog = (item: any) => {
+    console.log(item);
+  };
+
+  const handleDelete = async (roleId: number) => {
+    try {
+      const roleResponse = await fetch(
+        `http://localhost:3001/roles/${roleId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!roleResponse.ok) {
+        console.error("Error deleting role");
+        return;
+      }
+
+      console.log("Role deleted successfully");
+      const permissionsResponse = await fetch(
+        `http://localhost:3001/permissions?role_id=${roleId}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (permissionsResponse.ok) {
+        const permissions = await permissionsResponse.json();
+        await Promise.all(
+          permissions.map((permission: { id: string }) =>
+            fetch(`http://localhost:3001/permissions/${permission.id}`, {
+              method: "DELETE",
+            })
+          )
+        );
+
+        console.log("Associated permissions deleted successfully");
+      } else {
+        console.error("Error fetching permissions");
+      }
+
+      // Refresh roles and permissions
+      await fetchRolesAndPermissions();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    onDeleteClose();
+    await fetchRolesAndPermissions();
+  };
+
   useEffect(() => {
     fetchRolesAndPermissions();
   }, []);
 
-  const handlePermissionToggle = async (roleId: any, permissionType: string) => {
+  const handlePermissionToggle = async (
+    roleId: any,
+    permissionType: string
+  ) => {
     try {
       const currentPermissionEntry = permissions.find(
         (p) => p.role_id === roleId
@@ -234,7 +310,7 @@ const RoleTable = () => {
           <TableColumn>WRITE</TableColumn>
           <TableColumn>EDIT</TableColumn>
           <TableColumn>DELETE</TableColumn>
-          {/* <TableColumn></TableColumn> */}
+          <TableColumn> </TableColumn>
         </TableHeader>
         <TableBody>
           {roles.map((role) => {
@@ -278,9 +354,9 @@ const RoleTable = () => {
                     }
                   />
                 </TableCell>
-                {/* <TableCell>
+                <TableCell>
                   <Button
-                    onPress={() => handleDeleteClick(role.id)}
+                    onPress={() => handleDeleteClick(role)}
                     color="danger"
                     className="ml-2"
                   >
@@ -292,7 +368,7 @@ const RoleTable = () => {
                       className="invert"
                     />
                   </Button>
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             );
           })}
@@ -322,6 +398,40 @@ const RoleTable = () => {
               </ModalFooter>
             </>
           )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        backdrop="opaque"
+        isOpen={isDeleteOpen}
+        onOpenChange={onDeleteClose}
+        classNames={{
+          backdrop:
+            "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
+        }}
+      >
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">Delete User</ModalHeader>
+
+          <ModalBody>
+            <p>Do you want to delete user : {" " + selectedRoleId?.name}</p>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button color="primary" variant="light" onPress={onDeleteClose}>
+              Cancel
+            </Button>
+            <Button
+              color="danger"
+              onPress={
+                // () =>printLog(selectedRoleId)
+                () =>
+                  selectedRoleId?.id !== undefined &&
+                  handleDelete(selectedRoleId.id)
+              }
+            >
+              Delete
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>
