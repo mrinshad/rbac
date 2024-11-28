@@ -415,17 +415,6 @@
         "Delete"
       ],
       "id": "akp99hs"
-    },
-    {
-      "name": "Rinhhhh",
-      "email": "kkk",
-      "role": "Contributor",
-      "status": "Inactive",
-      "permissions": [
-        "Read",
-        "Write"
-      ],
-      "id": "ckhnr6J"
     }
   ]
 }

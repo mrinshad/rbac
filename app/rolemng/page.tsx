@@ -22,16 +22,20 @@ import Image from "next/image";
 
 interface Role {
   id: number;
+  name: string;
+  permissions: string[];
+}
+
+interface Permission {
+  id: string;
   role_id: number;
   role_name: string;
   permissions: string[];
 }
 
-
-
 const RoleTable = () => {
-  const [roles, setRoles] = useState([]);
-  const [permissions, setPermissions] = useState([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+    const [permissions, setPermissions] = useState<Permission[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddRoleModalOpen, setIsAddRoleModalOpen] = useState(false);
@@ -295,15 +299,7 @@ const RoleTable = () => {
         </div>
       </div>
 
-      <Table
-        aria-label="Role Management Table"
-        css={{
-          height: "auto",
-          minWidth: "100%",
-        }}
-        bordered
-        shadow={false}
-      >
+      <Table>
         <TableHeader>
           <TableColumn>ROLE NAME</TableColumn>
           <TableColumn>READ</TableColumn>
